@@ -19,39 +19,38 @@ package com.respam.comniq.models;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-import java.io.File;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 /**
  * Created by S P Mahapatra on 3/16/2017.
  */
-public class MovieListParser {
-    public void parseFolder(String location) {
-        File loc = new File(location);
-        JSONArray jsonArr = new JSONArray();
+public class OMDBParser {
+    public void parseLocalJSON() {
+        JSONParser parser = new JSONParser();
 
-        if(loc.isDirectory()) {
-            String[] folders = loc.list();
-            for(String folderName: folders) {
-                JSONObject jsonObj = new JSONObject();
-                String[] movieName = folderName.split("\\(");
-                String[] movieYear = movieName[1].split("\\)");
-                jsonObj.put("movie", movieName[0].trim());
-                jsonObj.put("year", movieYear[0]);
-                jsonArr.add(jsonObj);
+        try {
+            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/LocalList.json"));
+            JSONArray parsedArr = (JSONArray) obj;
+
+            // Loop JSON Array
+            for(int i=0; i<parsedArr.size(); i++) {
+                JSONObject parsedObj = (JSONObject) parsedArr.get(i);
+                String movieName = (String) parsedObj.get("movie");
+                String movieYear = (String) parsedObj.get("year");
+                System.out.println(movieName + "-" + movieYear);
             }
 
-            try {
-                FileWriter localList = new FileWriter(System.getProperty("user.dir") + "/src/output/LocalList.json");
-                localList.write(jsonArr.toJSONString());
-                localList.flush();
-                localList.close();
-                System.out.println("Local Processing Complete");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 }

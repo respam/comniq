@@ -18,6 +18,8 @@
 package com.respam.comniq;
 
 import com.respam.comniq.models.MovieListParser;
+import com.respam.comniq.models.OMDBParser;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
@@ -26,9 +28,14 @@ public class Controller {
     @FXML private TextField inputPath;
 
     @FXML
-    protected void handleProcessButtonAction() {
+    protected void handleLocalButtonAction() {
         localMovies = inputPath.getText();
         MovieListParser mp = new MovieListParser();
         mp.parseFolder(localMovies);
+    }
+
+    public void handleOMDBButtonAction() {
+        OMDBParser op = new OMDBParser();
+        op.parseLocalJSON();
     }
 }
