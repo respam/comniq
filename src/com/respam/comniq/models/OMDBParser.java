@@ -17,19 +17,24 @@
 
 package com.respam.comniq.models;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Created by S P Mahapatra on 3/16/2017.
  */
 public class OMDBParser {
+    private JSONArray movieInfo = new JSONArray();
     public void parseLocalJSON() {
         JSONParser parser = new JSONParser();
 
@@ -43,6 +48,7 @@ public class OMDBParser {
                 String movieName = (String) parsedObj.get("movie");
                 String movieYear = (String) parsedObj.get("year");
                 System.out.println(movieName + "-" + movieYear);
+                requestOMDB(movieName, movieYear);
             }
 
         } catch (FileNotFoundException e) {
@@ -50,6 +56,44 @@ public class OMDBParser {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        movieInfoWriter();
+    }
+
+    public void requestOMDB(String movie, String year) {
+        try {
+            HttpClient client = HttpClientBuilder.create().build();
+            String uri = "http://www.omdbapi.com/?t=" + movie + "&y=" + year;
+            uri = uri.replace(" ","%20");
+            HttpGet request = new HttpGet(uri);
+            HttpResponse response = client.execute(request);
+            String json = EntityUtils.toString(response.getEntity());
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(json);
+            movieInfo.add(jsonObject);
+            System.out.println(json);
+
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void movieInfoWriter() {
+        try {
+            FileWriter localList = new FileWriter(System.getProperty("user.dir") + "/src/output/MovieInfo.json");
+            localList.write(movieInfo.toJSONString());
+            localList.flush();
+            localList.close();
+            System.out.println("Movie Info Written");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

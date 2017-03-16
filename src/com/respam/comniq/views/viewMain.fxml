@@ -26,7 +26,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.respam.comniq.Controller">
    <children>
-      <TextField fx:id="inputPath" layoutX="180.0" layoutY="53.0" prefHeight="25.0" prefWidth="346.0" text="C:\\Users\\mahasaty\\Documents\\Progs\\comniq_test_data" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="53.0" />
+      <TextField fx:id="inputPath" layoutX="180.0" layoutY="53.0" prefHeight="25.0" prefWidth="346.0" text="C:\\Users\\spam-pc\\Documents\\Progs\\comniq_test_data" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="53.0" />
       <Text layoutX="66.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Movies Directory" AnchorPane.bottomAnchor="326.7373046875" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="429.6318359375" AnchorPane.topAnchor="55.9716796875">
          <font>
             <Font name="System Bold" size="13.0" />
