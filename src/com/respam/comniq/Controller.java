@@ -17,5 +17,18 @@
 
 package com.respam.comniq;
 
+import com.respam.comniq.models.MovieListParser;
+import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
+
 public class Controller {
+    String localMovies;
+    @FXML private TextField inputPath;
+
+    @FXML
+    protected void handleProcessButtonAction() {
+        localMovies = inputPath.getText();
+        MovieListParser mp = new MovieListParser();
+        mp.parseFolder(localMovies);
+    }
 }

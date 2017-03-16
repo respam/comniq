@@ -67,3 +67,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+# project specific
+/output/
+/src/output
