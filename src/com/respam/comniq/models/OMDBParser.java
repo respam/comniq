@@ -17,11 +17,15 @@
 
 package com.respam.comniq.models;
 
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,36 +39,21 @@ import java.io.*;
  */
 public class OMDBParser {
     private JSONArray movieInfo = new JSONArray();
-    public void parseLocalJSON() {
-        JSONParser parser = new JSONParser();
-
-        try {
-            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/LocalList.json"));
-            JSONArray parsedArr = (JSONArray) obj;
-
-            // Loop JSON Array
-            for(int i=0; i<parsedArr.size(); i++) {
-                JSONObject parsedObj = (JSONObject) parsedArr.get(i);
-                String movieName = (String) parsedObj.get("movie");
-                String movieYear = (String) parsedObj.get("year");
-                System.out.println(movieName + "-" + movieYear);
-                requestOMDB(movieName, movieYear);
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        movieInfoWriter();
-    }
 
     public void requestOMDB(String movie, String year) {
         try {
-            HttpClient client = HttpClientBuilder.create().build();
+            // Proxy details
+            HttpHost proxy = new HttpHost("web-proxy.in.hpecorp.net", 8080, "http");
+
+//            HttpClient client = HttpClientBuilder.create().build();
+
+            // Start of proxy client
+            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+            CloseableHttpClient client = HttpClients.custom()
+                    .setRoutePlanner(routePlanner)
+                    .build();
+            // End of proxy client
+
             String uri = "http://www.omdbapi.com/?t=" + movie + "&y=" + year;
             uri = uri.replace(" ","%20");
             HttpGet request = new HttpGet(uri);
@@ -74,7 +63,6 @@ public class OMDBParser {
             JSONObject jsonObject = (JSONObject) parser.parse(json);
             movieInfo.add(jsonObject);
             System.out.println(json);
-
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (UnsupportedOperationException e) {

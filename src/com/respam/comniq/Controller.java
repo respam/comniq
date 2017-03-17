@@ -19,23 +19,143 @@ package com.respam.comniq;
 
 import com.respam.comniq.models.MovieListParser;
 import com.respam.comniq.models.OMDBParser;
-import javafx.event.ActionEvent;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Controller {
+    private Task parseWorker;
+    private Task requestWorker;
+
+    @FXML
+    private TextArea textArea;
+
+    @FXML
+    private ProgressBar progressBar;
+
     String localMovies;
     @FXML private TextField inputPath;
 
     @FXML
     protected void handleLocalButtonAction() {
-        localMovies = inputPath.getText();
-        MovieListParser mp = new MovieListParser();
-        mp.parseFolder(localMovies);
+        progressBar.setProgress(0);
+        parseWorker = createWorker();
+        progressBar.progressProperty().unbind();
+        progressBar.progressProperty().bind(parseWorker.progressProperty());
+        new Thread(parseWorker).start();
     }
 
+    public Task createWorker() {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+                localMovies = inputPath.getText();
+
+                File loc = new File(localMovies);
+                JSONArray jsonArr = new JSONArray();
+
+                if(loc.isDirectory()) {
+                    String[] folders = loc.list();
+                    for(int i=0; i<folders.length; i++) {
+                        JSONObject jsonObj = new JSONObject();
+                        String[] movieName = folders[i].split("\\(");
+                        String[] movieYear = movieName[1].split("\\)");
+                        jsonObj.put("movie", movieName[0].trim());
+                        jsonObj.put("year", movieYear[0]);
+                        jsonArr.add(jsonObj);
+                        updateProgress(i, folders.length-1);
+                    }
+                }
+                MovieListParser mp = new MovieListParser();
+                mp.JSONWriter(jsonArr);
+                return true;
+            }
+        };
+    }
+
+    @FXML
     public void handleOMDBButtonAction() {
-        OMDBParser op = new OMDBParser();
-        op.parseLocalJSON();
+        progressBar.relocate(0,100);
+        requestWorker = OMDBworker();
+        progressBar.progressProperty().unbind();
+        progressBar.progressProperty().bind(requestWorker.progressProperty());
+        new Thread(requestWorker).start();
+    }
+
+    public Task OMDBworker() {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+                OMDBParser op = new OMDBParser();
+                JSONParser parser = new JSONParser();
+                try {
+                    Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/LocalList.json"));
+                    JSONArray parsedArr = (JSONArray) obj;
+
+                    // Loop JSON Array
+                    for(int i=0; i<parsedArr.size(); i++) {
+                        JSONObject parsedObj = (JSONObject) parsedArr.get(i);
+                        String movieName = (String) parsedObj.get("movie");
+                        String movieYear = (String) parsedObj.get("year");
+                        System.out.println(movieName + "-" + movieYear);
+                        op.requestOMDB(movieName, movieYear);
+                        updateProgress(i, parsedArr.size()-1);
+                    }
+                    op.movieInfoWriter();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+        };
+    }
+
+    @FXML
+    public void handleDisplayAction() {
+        outputText();
+    }
+
+    public void outputText() {
+        JSONParser parser = new JSONParser();
+        try {
+            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/MovieInfo.json"));
+            JSONArray parsedArr = (JSONArray) obj;
+
+            // Loop JSON Array
+            for(int i=0; i<parsedArr.size(); i++) {
+                JSONObject parsedObj = (JSONObject) parsedArr.get(i);
+                textArea.setWrapText(true);
+                textArea.appendText("Title: " + (String) parsedObj.get("Title") + "\n");
+                textArea.appendText("Release Date: " + (String) parsedObj.get("Released") + "\n");
+                textArea.appendText("Genre: " + (String) parsedObj.get("Genre") + "\n");
+                textArea.appendText("IMDB Rating: " + (String) parsedObj.get("imdbRating") + "\n");
+                textArea.appendText("Actors: " + (String) parsedObj.get("Actors") + "\n");
+                textArea.appendText("Plot: " + (String) parsedObj.get("Plot") + "\n");
+
+                textArea.appendText("\n\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

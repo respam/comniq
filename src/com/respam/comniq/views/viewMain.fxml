@@ -18,6 +18,7 @@
   -->
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -26,21 +27,27 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.respam.comniq.Controller">
    <children>
-      <TextField fx:id="inputPath" layoutX="180.0" layoutY="53.0" prefHeight="25.0" prefWidth="346.0" text="C:\\Users\\spam-pc\\Documents\\Progs\\comniq_test_data" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="53.0" />
-      <Text layoutX="66.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Movies Directory" AnchorPane.bottomAnchor="326.7373046875" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="429.6318359375" AnchorPane.topAnchor="55.9716796875">
+      <TextField fx:id="inputPath" layoutX="180.0" layoutY="38.0" prefHeight="25.0" prefWidth="346.0" text="C:\\Users\\mahasaty\\Documents\\Progs\\comniq_test_data" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="38.0" />
+      <Text layoutX="66.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Movies Directory" AnchorPane.bottomAnchor="343.7373046875" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="429.6318359375" AnchorPane.topAnchor="38.9716796875">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <TextArea layoutX="66.0" layoutY="100.0" prefHeight="200.0" prefWidth="460.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="100.0" />
-      <Button layoutX="353.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleLocalButtonAction" prefHeight="25.0" prefWidth="104.0" text="Process Local" AnchorPane.bottomAnchor="43.0" AnchorPane.rightAnchor="182.0">
+      <TextArea fx:id="textArea" layoutX="66.0" layoutY="100.0" prefHeight="200.0" prefWidth="460.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="100.0" />
+      <Button layoutX="292.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleLocalButtonAction" prefHeight="25.0" prefWidth="112.0" text="1. Process Local" AnchorPane.bottomAnchor="43.0" AnchorPane.rightAnchor="196.0">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button layoutX="431.0" layoutY="332.0" mnemonicParsing="false" text="Process OMDB" AnchorPane.bottomAnchor="43.0" AnchorPane.rightAnchor="74.0" onAction="#handleOMDBButtonAction">
+      <Button layoutX="431.0" layoutY="332.0" mnemonicParsing="false" onAction="#handleOMDBButtonAction" text="2. Process OMDB" AnchorPane.bottomAnchor="43.0" AnchorPane.rightAnchor="74.0">
          <font>
             <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <ProgressBar fx:id="progressBar" layoutX="66.0" layoutY="336.0" prefHeight="18.0" prefWidth="213.0" progress="0.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="321.0" />
+      <Button layoutX="66.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleDisplayAction" prefHeight="25.0" prefWidth="104.0" text="3. Show Movies" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="67.0">
+         <font>
+            <Font name="System Bold" size="11.0" />
          </font>
       </Button>
    </children>

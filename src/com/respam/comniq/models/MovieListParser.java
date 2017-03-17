@@ -18,9 +18,6 @@
 package com.respam.comniq.models;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -28,30 +25,16 @@ import java.io.IOException;
  * Created by S P Mahapatra on 3/16/2017.
  */
 public class MovieListParser {
-    public void parseFolder(String location) {
-        File loc = new File(location);
-        JSONArray jsonArr = new JSONArray();
 
-        if(loc.isDirectory()) {
-            String[] folders = loc.list();
-            for(String folderName: folders) {
-                JSONObject jsonObj = new JSONObject();
-                String[] movieName = folderName.split("\\(");
-                String[] movieYear = movieName[1].split("\\)");
-                jsonObj.put("movie", movieName[0].trim());
-                jsonObj.put("year", movieYear[0]);
-                jsonArr.add(jsonObj);
-            }
-
-            try {
-                FileWriter localList = new FileWriter(System.getProperty("user.dir") + "/src/output/LocalList.json");
-                localList.write(jsonArr.toJSONString());
-                localList.flush();
-                localList.close();
-                System.out.println("Local Processing Complete");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void JSONWriter(JSONArray JSONarr) {
+        try {
+            FileWriter localList = new FileWriter(System.getProperty("user.dir") + "/src/output/LocalList.json");
+            localList.write(JSONarr.toJSONString());
+            localList.flush();
+            localList.close();
+            System.out.println("Local Processing Complete");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
