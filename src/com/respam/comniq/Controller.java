@@ -24,6 +24,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -156,6 +157,15 @@ public class Controller {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    protected void browseButtonAction() {
+        DirectoryChooser dc = new DirectoryChooser();
+        File selectedDC = dc.showDialog(null);
+        if(selectedDC != null) {
+            inputPath.setText(selectedDC.getPath());
         }
     }
 }
