@@ -134,6 +134,7 @@ public class Controller {
 
     public void outputText() {
         JSONParser parser = new JSONParser();
+        textArea.setEditable(false);
         try {
             Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/MovieInfo.json"));
             JSONArray parsedArr = (JSONArray) obj;
@@ -145,6 +146,8 @@ public class Controller {
                 textArea.appendText("Title: " + (String) parsedObj.get("Title") + "\n");
                 textArea.appendText("Release Date: " + (String) parsedObj.get("Released") + "\n");
                 textArea.appendText("Genre: " + (String) parsedObj.get("Genre") + "\n");
+
+                textArea.appendText("IMDB Link: " + "http://www.imdb.com/title/" +(String) parsedObj.get("imdbID") + "\n");
                 textArea.appendText("IMDB Rating: " + (String) parsedObj.get("imdbRating") + "\n");
                 textArea.appendText("Actors: " + (String) parsedObj.get("Actors") + "\n");
                 textArea.appendText("Plot: " + (String) parsedObj.get("Plot") + "\n");
