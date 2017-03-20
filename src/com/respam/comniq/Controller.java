@@ -70,10 +70,20 @@ public class Controller {
                     String[] folders = loc.list();
                     for(int i=0; i<folders.length; i++) {
                         JSONObject jsonObj = new JSONObject();
-                        String[] movieName = folders[i].split("\\(");
-                        String[] movieYear = movieName[1].split("\\)");
-                        jsonObj.put("movie", movieName[0].trim());
-                        jsonObj.put("year", movieYear[0]);
+
+                        if(folders[i].charAt(0) == '(') {
+                            String[] movieYear = folders[i].split("[()]");
+                            jsonObj.put("movie", movieYear[2].trim());
+                            jsonObj.put("year", movieYear[1]);
+                        }
+
+                        else {
+                            String[] movieName = folders[i].split("\\(");
+                            String[] movieYear = movieName[1].split("\\)");
+                            jsonObj.put("movie", movieName[0].trim());
+                            jsonObj.put("year", movieYear[0]);
+                        }
+
                         jsonArr.add(jsonObj);
                         updateProgress(i, folders.length-1);
                     }
