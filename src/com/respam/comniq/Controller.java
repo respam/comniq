@@ -58,6 +58,14 @@ public class Controller {
     private TextField inputPath;
 
     @FXML
+    protected void exportButtonAction() {
+        parseWorker = createExportWorker();
+        progressBar.progressProperty().unbind();
+        progressBar.progressProperty().bind(parseWorker.progressProperty());
+        new Thread(parseWorker).start();
+    }
+
+    @FXML
     protected void handleLocalButtonAction() {
         localMovies = inputPath.getText();
         File loc = new File(localMovies);
@@ -222,5 +230,47 @@ public class Controller {
         if (selectedDC != null) {
             inputPath.setText(selectedDC.getPath());
         }
+    }
+
+    public Task createExportWorker() {
+        return new Task() {
+            @Override
+            protected Object call() throws Exception {
+                localMovies = inputPath.getText();
+
+                File loc = new File(localMovies);
+                JSONArray jsonArr = new JSONArray();
+
+
+                String[] folders = loc.list();
+                for (int i = 0; i < folders.length; i++) {
+                    JSONObject jsonObj = new JSONObject();
+
+                    if (folders[i].charAt(0) == '(' || folders[i].charAt(0) == '{') {
+                        String[] movieYear = folders[i].split("[({})]");
+                        jsonObj.put("movie", movieYear[2].trim());
+                        jsonObj.put("year", movieYear[1]);
+                    }
+                    else if ((folders[i].charAt(folders[i].length() - 1) == ')') || (folders[i].charAt(folders[i].length() - 1) == '}')) {
+                        String[] movieName = folders[i].split("[({]");
+                        String[] movieYear = movieName[1].split("[)}]");
+                        jsonObj.put("movie", movieName[0].trim());
+                        jsonObj.put("year", movieYear[0]);
+                    }
+
+                    else {
+                        jsonObj.put("movie", folders[i].trim());
+                        jsonObj.put("year", null);
+                    }
+
+                    jsonArr.add(jsonObj);
+                    updateProgress(i, folders.length - 1);
+                }
+
+                MovieListParser mp = new MovieListParser();
+                mp.JSONWriter(jsonArr);
+                return true;
+            }
+        };
     }
 }

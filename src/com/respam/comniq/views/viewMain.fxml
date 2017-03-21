@@ -34,24 +34,29 @@
             <Font name="System Bold" size="13.0" />
          </font>
       </Text>
-      <TextArea fx:id="textArea" layoutX="66.0" layoutY="100.0" prefHeight="200.0" prefWidth="460.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="100.0" />
-      <Button layoutX="292.0" layoutY="315.0" mnemonicParsing="false" onAction="#handleLocalButtonAction" prefHeight="25.0" prefWidth="112.0" text="1. Process Local" AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="196.0">
+      <TextArea fx:id="textArea" layoutX="66.0" layoutY="110.0" prefHeight="200.0" prefWidth="460.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="110.0" />
+      <Button layoutX="292.0" layoutY="325.0" mnemonicParsing="false" onAction="#handleLocalButtonAction" prefHeight="25.0" prefWidth="112.0" text="1. Process Local" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="196.0">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button layoutX="413.0" layoutY="315.0" mnemonicParsing="false" onAction="#handleOMDBButtonAction" text="2. Process OMDB" AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="74.0">
+      <Button layoutX="413.0" layoutY="325.0" mnemonicParsing="false" onAction="#handleOMDBButtonAction" text="2. Process OMDB" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="74.0">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <ProgressBar fx:id="progressBar" layoutX="66.0" layoutY="320.0" prefHeight="18.0" prefWidth="211.0" progress="0.0" AnchorPane.bottomAnchor="62.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="323.0" />
-      <Button layoutX="66.0" layoutY="67.0" mnemonicParsing="false" onAction="#handleDisplayAction" prefHeight="25.0" prefWidth="104.0" text="3. Show Movies" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="67.0">
+      <ProgressBar fx:id="progressBar" layoutX="66.0" layoutY="330.0" prefHeight="18.0" prefWidth="211.0" progress="0.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="323.0" />
+      <Button layoutX="66.0" layoutY="77.0" mnemonicParsing="false" onAction="#handleDisplayAction" prefHeight="25.0" prefWidth="104.0" text="3. Show Movies" AnchorPane.leftAnchor="66.0" AnchorPane.topAnchor="77.0">
          <font>
             <Font name="System Bold" size="11.0" />
          </font>
       </Button>
       <Button layoutX="500.0" layoutY="38.0" mnemonicParsing="false" onAction="#browseButtonAction" prefHeight="25.0" prefWidth="26.0" text="..." AnchorPane.rightAnchor="74.0" AnchorPane.topAnchor="38.0" />
       <TextFlow fx:id="textFlow" layoutX="64.0" layoutY="372.0" prefHeight="25.0" prefWidth="529.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="64.0" />
+      <Button onAction="#exportButtonAction" layoutX="180.0" layoutY="77.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="104.0" text="4. Export to xls">
+         <font>
+            <Font name="System Bold" size="11.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
