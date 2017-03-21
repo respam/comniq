@@ -75,11 +75,20 @@ public class OMDBParser {
     }
 
     public void movieInfoWriter() {
+        String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
+        File userOutDir = new File(path);
+        if (userOutDir.exists()) {
+            System.out.println(userOutDir + " already exists");
+        } else if (userOutDir.mkdirs()) {
+            System.out.println(userOutDir + " was created");
+        } else {
+            System.out.println(userOutDir + " was not created");
+        }
         try {
-            FileWriter localList = new FileWriter(System.getProperty("user.dir") + "/src/output/MovieInfo.json");
-            localList.write(movieInfo.toJSONString());
-            localList.flush();
-            localList.close();
+            FileWriter omdbList = new FileWriter(userOutDir + File.separator + "MovieInfo.json");
+            omdbList.write(movieInfo.toJSONString());
+            omdbList.flush();
+            omdbList.close();
             System.out.println("Movie Info Written");
         } catch (IOException e) {
             e.printStackTrace();

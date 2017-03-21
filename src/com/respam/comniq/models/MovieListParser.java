@@ -18,6 +18,8 @@
 package com.respam.comniq.models;
 
 import org.json.simple.JSONArray;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -28,7 +30,17 @@ public class MovieListParser {
 
     public void JSONWriter(JSONArray JSONarr) {
         try {
-            FileWriter localList = new FileWriter(System.getProperty("user.dir") + "/src/output/LocalList.json");
+            String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
+            File userOutDir = new File(path);
+            if (userOutDir.exists()) {
+                System.out.println(userOutDir + " already exists");
+            } else if (userOutDir.mkdirs()) {
+                System.out.println(userOutDir + " was created");
+            } else {
+                System.out.println(userOutDir + " was not created");
+            }
+
+            FileWriter localList = new FileWriter(userOutDir + File.separator + "LocalList.json");
             localList.write(JSONarr.toJSONString());
             localList.flush();
             localList.close();

@@ -150,8 +150,9 @@ public class Controller {
             protected Object call() throws Exception {
                 OMDBParser op = new OMDBParser();
                 JSONParser parser = new JSONParser();
+                String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
                 try {
-                    Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/LocalList.json"));
+                    Object obj = parser.parse(new FileReader(path + File.separator + "LocalList.json"));
                     JSONArray parsedArr = (JSONArray) obj;
 
                     // Loop JSON Array
@@ -185,8 +186,9 @@ public class Controller {
     public void outputText() {
         JSONParser parser = new JSONParser();
         textArea.setEditable(false);
+        String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
         try {
-            Object obj = parser.parse(new FileReader(System.getProperty("user.dir") + "/src/output/MovieInfo.json"));
+            Object obj = parser.parse(new FileReader(path + File.separator + "MovieInfo.json"));
             JSONArray parsedArr = (JSONArray) obj;
 
             // Loop JSON Array
