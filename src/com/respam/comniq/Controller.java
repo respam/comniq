@@ -17,6 +17,7 @@
 
 package com.respam.comniq;
 
+import com.respam.comniq.models.ExcelExporter;
 import com.respam.comniq.models.MovieListParser;
 import com.respam.comniq.models.OMDBParser;
 import javafx.concurrent.Task;
@@ -59,6 +60,8 @@ public class Controller {
 
     @FXML
     protected void exportButtonAction() {
+        progressBar.relocate(0, 100);
+        textFlow.getChildren().clear();
         parseWorker = createExportWorker();
         progressBar.progressProperty().unbind();
         progressBar.progressProperty().bind(parseWorker.progressProperty());
@@ -236,39 +239,27 @@ public class Controller {
         return new Task() {
             @Override
             protected Object call() throws Exception {
-                localMovies = inputPath.getText();
+                JSONParser parser = new JSONParser();
+                String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
 
-                File loc = new File(localMovies);
-                JSONArray jsonArr = new JSONArray();
+                try {
+                    ExcelExporter export = new ExcelExporter();
+                    Object obj = parser.parse(new FileReader(path + File.separator + "MovieInfo.json"));
+                    JSONArray parsedArr = (JSONArray) obj;
 
-
-                String[] folders = loc.list();
-                for (int i = 0; i < folders.length; i++) {
-                    JSONObject jsonObj = new JSONObject();
-
-                    if (folders[i].charAt(0) == '(' || folders[i].charAt(0) == '{') {
-                        String[] movieYear = folders[i].split("[({})]");
-                        jsonObj.put("movie", movieYear[2].trim());
-                        jsonObj.put("year", movieYear[1]);
+                    // Loop JSON Array
+                    for (int i = 0; i < parsedArr.size(); i++) {
+                        JSONObject parsedObj = (JSONObject) parsedArr.get(i);
+                        export.excelWriter(parsedObj);
+                        updateProgress(i, parsedArr.size() - 1);
                     }
-                    else if ((folders[i].charAt(folders[i].length() - 1) == ')') || (folders[i].charAt(folders[i].length() - 1) == '}')) {
-                        String[] movieName = folders[i].split("[({]");
-                        String[] movieYear = movieName[1].split("[)}]");
-                        jsonObj.put("movie", movieName[0].trim());
-                        jsonObj.put("year", movieYear[0]);
-                    }
-
-                    else {
-                        jsonObj.put("movie", folders[i].trim());
-                        jsonObj.put("year", null);
-                    }
-
-                    jsonArr.add(jsonObj);
-                    updateProgress(i, folders.length - 1);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-
-                MovieListParser mp = new MovieListParser();
-                mp.JSONWriter(jsonArr);
                 return true;
             }
         };
