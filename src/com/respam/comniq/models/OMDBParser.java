@@ -33,6 +33,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 /**
  * Created by S P Mahapatra on 3/16/2017.
@@ -41,17 +44,30 @@ public class OMDBParser {
     private JSONArray movieInfo = new JSONArray();
 
     public void requestOMDB(String movie, String year) {
+        String imageURL;
+
+        // Location for downloading and storing thumbnails
+        String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator +
+                "output" + File.separator + "thumbnails";
+        File userOutDir = new File(path);
+
+        // Create Thumbnails directory if not present
+        if (userOutDir.mkdirs()) {
+            System.out.println(userOutDir + " was created");
+        }
+
+        // Connect to OMDB API and fetch details
         try {
             // Proxy details
-            HttpHost proxy = new HttpHost("web-proxy.in.hpecorp.net", 8080, "http");
+//            HttpHost proxy = new HttpHost("web-proxy.in.hpecorp.net", 8080, "http");
 
-//            HttpClient client = HttpClientBuilder.create().build();
+            HttpClient client = HttpClientBuilder.create().build();
 
             // Start of proxy client
-            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
-            CloseableHttpClient client = HttpClients.custom()
-                    .setRoutePlanner(routePlanner)
-                    .build();
+//            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+//            CloseableHttpClient client = HttpClients.custom()
+//                    .setRoutePlanner(routePlanner)
+//                    .build();
             // End of proxy client
 
             String uri = "http://www.omdbapi.com/?t=" + movie + "&y=" + year;
@@ -65,15 +81,20 @@ public class OMDBParser {
             // Excluding Non Movies
             if(null != jsonObject.get("Title")) {
                 movieInfo.add(jsonObject);
+
+                // Download the thumbnails if present
+                if(null != jsonObject.get("Poster")) {
+                    imageURL = ((String) jsonObject.get("Poster"));
+                    System.out.println(imageURL);
+                    URL thumbnail = new URL(imageURL);
+                    ReadableByteChannel rbc = Channels.newChannel(thumbnail.openStream());
+                    FileOutputStream fos = new FileOutputStream(path + File.separator + jsonObject.get("Title") + ".jpg");
+                    fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                }
+
             }
 
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (UnsupportedOperationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (ParseException | IOException | UnsupportedOperationException e) {
             e.printStackTrace();
         }
     }

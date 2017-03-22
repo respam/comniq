@@ -27,6 +27,8 @@ import jxl.write.*;
 import jxl.write.biff.RowsExceededException;
 import org.json.simple.JSONObject;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -101,6 +103,22 @@ public class ExcelExporter {
     public void excelWriter(JSONObject jsonObj) throws IOException, WriteException, BiffException{
         String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
         File file = new File(path + File.separator + "movieInfo.xls");
+
+        // Converting JPG image to PNG for insertion in excel file
+        if(null != jsonObj.get("Poster")) {
+            String thumbnailPath = System.getProperty("user.home") + File.separator + "comniq" +
+                    File.separator + "output" + File.separator + "thumbnails";
+            File thumbnailFile = new File(thumbnailPath + File.separator + jsonObj.get("Title") + ".jpg");
+            File outThumbnailFile = new File(thumbnailPath + File.separator + jsonObj.get("Title") + ".png");
+            BufferedImage bufferedImage = ImageIO.read(thumbnailFile);
+            ImageIO.write(bufferedImage, "png", outThumbnailFile);
+            if(thumbnailFile.delete()) {
+                System.out.println(jsonObj.get("Title") + ".jpg" + " deleted...");
+            } else {
+                System.out.println(jsonObj.get("Title") + ".jpg" + " not deleted...");
+            }
+        }
+
         if(!file.exists()) {
             createFile();
         }
@@ -120,7 +138,13 @@ public class ExcelExporter {
         Cell[] cell = excelSheet.getColumn(1);
         int len = cell.length;
         Label title, release, metascore, imdbRate, plot, imdbURL, genre, director, actors, rating, runtime;
-        title = new Label(1, len,(String) jsonObj.get("Title"),cellFormat);
+
+        String thumbnailPath = System.getProperty("user.home") + File.separator + "comniq" +
+                File.separator + "output" + File.separator + "thumbnails";
+        File thumbnailFile = new File(thumbnailPath + File.separator + jsonObj.get("Title") + ".png");
+        WritableImage poster;
+        poster = new WritableImage(0, len, 1, 1.5, thumbnailFile);
+        title = new Label(1, len, (String) jsonObj.get("Title"),cellFormat);
         release = new Label(2, len,(String) jsonObj.get("Released"),cellFormat);
         metascore = new Label(3, len,(String) jsonObj.get("Metascore"),cellFormat);
         imdbRate = new Label(4, len,(String) jsonObj.get("imdbRating"),cellFormat);
@@ -132,6 +156,20 @@ public class ExcelExporter {
         rating = new Label(10, len,(String) jsonObj.get("Rated"),cellFormat);
         runtime = new Label(11, len,(String) jsonObj.get("Runtime"),cellFormat);
 
+        excelSheet.setRowView(len, 1500);
+        excelSheet.setColumnView(0, 12);
+        excelSheet.setColumnView(1, 20);
+        excelSheet.setColumnView(2, 12);
+        excelSheet.setColumnView(3, 12);
+        excelSheet.setColumnView(4, 12);
+        excelSheet.setColumnView(5, 40);
+        excelSheet.setColumnView(6, 20);
+        excelSheet.setColumnView(7, 15);
+        excelSheet.setColumnView(8, 12);
+        excelSheet.setColumnView(9, 15);
+        excelSheet.setColumnView(10, 10);
+        excelSheet.setColumnView(11, 10);
+        excelSheet.addImage(poster);
         excelSheet.addCell(title);
         excelSheet.addCell(release);
         excelSheet.addCell(metascore);

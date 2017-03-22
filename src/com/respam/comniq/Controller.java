@@ -197,7 +197,7 @@ public class Controller {
         outputText();
     }
 
-    public void outputText() {
+    private void outputText() {
         JSONParser parser = new JSONParser();
         textArea.setEditable(false);
         String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
@@ -210,11 +210,11 @@ public class Controller {
                 textArea.clear();
                 textArea.appendText("No Movies found from the provided Directory !!!");
             } else {
+                textArea.clear();
                 // Loop JSON Array
 
                 for (int i = 0; i < parsedArr.size(); i++) {
                     JSONObject parsedObj = (JSONObject) parsedArr.get(i);
-                    textArea.clear();
                     textArea.setWrapText(true);
                     textArea.appendText("Title: " + (String) parsedObj.get("Title") + "\n");
                     textArea.appendText("Release Date: " + (String) parsedObj.get("Released") + "\n");
