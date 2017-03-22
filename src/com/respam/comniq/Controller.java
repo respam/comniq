@@ -153,6 +153,9 @@ public class Controller {
         progressBar.progressProperty().unbind();
         progressBar.progressProperty().bind(requestWorker.progressProperty());
         new Thread(requestWorker).start();
+        textArea.setEditable(false);
+        textArea.clear();
+        textArea.appendText("Click on Export Button once OMDB Parse is complete...");
     }
 
     public Task OMDBworker() {
@@ -202,20 +205,28 @@ public class Controller {
             Object obj = parser.parse(new FileReader(path + File.separator + "MovieInfo.json"));
             JSONArray parsedArr = (JSONArray) obj;
 
-            // Loop JSON Array
-            for (int i = 0; i < parsedArr.size(); i++) {
-                JSONObject parsedObj = (JSONObject) parsedArr.get(i);
-                textArea.setWrapText(true);
-                textArea.appendText("Title: " + (String) parsedObj.get("Title") + "\n");
-                textArea.appendText("Release Date: " + (String) parsedObj.get("Released") + "\n");
-                textArea.appendText("Genre: " + (String) parsedObj.get("Genre") + "\n");
+            if(parsedArr.size() == 0) {
+                textArea.setEditable(false);
+                textArea.clear();
+                textArea.appendText("No Movies found from the provided Directory !!!");
+            } else {
+                // Loop JSON Array
 
-                textArea.appendText("IMDB Link: " + "http://www.imdb.com/title/" + (String) parsedObj.get("imdbID") + "\n");
-                textArea.appendText("IMDB Rating: " + (String) parsedObj.get("imdbRating") + "\n");
-                textArea.appendText("Actors: " + (String) parsedObj.get("Actors") + "\n");
-                textArea.appendText("Plot: " + (String) parsedObj.get("Plot") + "\n");
+                for (int i = 0; i < parsedArr.size(); i++) {
+                    JSONObject parsedObj = (JSONObject) parsedArr.get(i);
+                    textArea.clear();
+                    textArea.setWrapText(true);
+                    textArea.appendText("Title: " + (String) parsedObj.get("Title") + "\n");
+                    textArea.appendText("Release Date: " + (String) parsedObj.get("Released") + "\n");
+                    textArea.appendText("Genre: " + (String) parsedObj.get("Genre") + "\n");
 
-                textArea.appendText("\n\n");
+                    textArea.appendText("IMDB Link: " + "http://www.imdb.com/title/" + (String) parsedObj.get("imdbID") + "\n");
+                    textArea.appendText("IMDB Rating: " + (String) parsedObj.get("imdbRating") + "\n");
+                    textArea.appendText("Actors: " + (String) parsedObj.get("Actors") + "\n");
+                    textArea.appendText("Plot: " + (String) parsedObj.get("Plot") + "\n");
+
+                    textArea.appendText("\n\n");
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

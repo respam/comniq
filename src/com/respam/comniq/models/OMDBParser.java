@@ -61,8 +61,12 @@ public class OMDBParser {
             String json = EntityUtils.toString(response.getEntity());
             JSONParser parser = new JSONParser();
             JSONObject jsonObject = (JSONObject) parser.parse(json);
-            movieInfo.add(jsonObject);
-            System.out.println(json);
+
+            // Excluding Non Movies
+            if(null != jsonObject.get("Title")) {
+                movieInfo.add(jsonObject);
+            }
+
         } catch (ClientProtocolException e) {
             e.printStackTrace();
         } catch (UnsupportedOperationException e) {
