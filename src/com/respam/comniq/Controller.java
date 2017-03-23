@@ -262,8 +262,10 @@ public class Controller {
                     for (int i = 0; i < parsedArr.size(); i++) {
                         JSONObject parsedObj = (JSONObject) parsedArr.get(i);
                         export.excelWriter(parsedObj);
+                        System.out.println("Done with " + parsedObj.get("Title"));
                         updateProgress(i, parsedArr.size() - 1);
                     }
+//                    export.addImages(parsedArr);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {

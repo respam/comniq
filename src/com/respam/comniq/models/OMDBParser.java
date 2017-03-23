@@ -59,15 +59,15 @@ public class OMDBParser {
         // Connect to OMDB API and fetch details
         try {
             // Proxy details
-//            HttpHost proxy = new HttpHost("web-proxy.in.hpecorp.net", 8080, "http");
+            HttpHost proxy = new HttpHost("web-proxy.in.hpecorp.net", 8080, "http");
 
-            HttpClient client = HttpClientBuilder.create().build();
+//            HttpClient client = HttpClientBuilder.create().build();
 
             // Start of proxy client
-//            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
-//            CloseableHttpClient client = HttpClients.custom()
-//                    .setRoutePlanner(routePlanner)
-//                    .build();
+            DefaultProxyRoutePlanner routePlanner = new DefaultProxyRoutePlanner(proxy);
+            CloseableHttpClient client = HttpClients.custom()
+                    .setRoutePlanner(routePlanner)
+                    .build();
             // End of proxy client
 
             String uri = "http://www.omdbapi.com/?t=" + movie + "&y=" + year;
