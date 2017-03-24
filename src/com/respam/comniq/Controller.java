@@ -20,6 +20,7 @@ package com.respam.comniq;
 import com.respam.comniq.models.ExcelExporter;
 import com.respam.comniq.models.MovieListParser;
 import com.respam.comniq.models.OMDBParser;
+import com.respam.comniq.models.POIexcelExporter;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
@@ -254,13 +255,15 @@ public class Controller {
                 String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
 
                 try {
-                    ExcelExporter export = new ExcelExporter();
+//                    ExcelExporter export = new ExcelExporter();
+                    POIexcelExporter export = new POIexcelExporter();
                     Object obj = parser.parse(new FileReader(path + File.separator + "MovieInfo.json"));
                     JSONArray parsedArr = (JSONArray) obj;
 
                     // Loop JSON Array
-                    for (int i = 0; i < parsedArr.size(); i++) {
+                    for (int i = 0; i < 1; i++) {
                         JSONObject parsedObj = (JSONObject) parsedArr.get(i);
+//                        export.excelWriter(parsedObj);
                         export.excelWriter(parsedObj);
                         System.out.println("Done with " + parsedObj.get("Title"));
                         updateProgress(i, parsedArr.size() - 1);
