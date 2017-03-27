@@ -17,14 +17,17 @@
 
 package com.respam.comniq.models;
 
-import jxl.write.WriteException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -35,8 +38,10 @@ import java.util.TreeMap;
  * Created by S P Mahapatra on 3/24/2017.
  */
 public class POIexcelExporter {
+    int lastRow = 0;
+    Boolean checked = false;
 
-    public void createFile() throws IOException, WriteException {
+    public void createFile() throws IOException {
         String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
         File file = new File(path + File.separator + "POImovieInfo.xlsx");
 
@@ -45,12 +50,18 @@ public class POIexcelExporter {
         XSSFSheet sheet = workbook.createSheet("Movies");
 
         // Data for Labels
-        Map<String, Object[]> label = new TreeMap<String, Object[]>();
+        Map<String, Object[]> label = new TreeMap<>();
         label.put("1", new Object[] {"Poster", "Title", "Release Date", "Metascore", "IMDB Rating",
         "Plot", "IMDB URL", "Genre", "Director", "Actors", "Rating", "Runtime"});
 
+        System.out.println(label);
         // Iterate over label and write to sheet
         Set<String> keyset = label.keySet();
+
+        Font font = workbook.createFont();
+        font.setFontHeight((short) 240);
+        font.setFontName("Courier New");
+        font.setBold(true);
 
         for(String key : keyset) {
             Row row = sheet.createRow(0);
@@ -58,6 +69,11 @@ public class POIexcelExporter {
             int cellnum = 0;
             for(Object obj : objArr) {
                 Cell cell = row.createCell(cellnum++);
+                if(cellnum == 2 ) {
+                    XSSFCellStyle titleStyle = workbook.createCellStyle();
+                    titleStyle.setFont(font);
+                    cell.setCellStyle(titleStyle);
+                }
                 System.out.println((String) obj);
                 cell.setCellValue((String) obj);
             }
@@ -74,15 +90,73 @@ public class POIexcelExporter {
 
     }
 
-    public void excelWriter(JSONObject parsedObj) throws IOException, WriteException {
+    public void excelWriter(JSONObject parsedObj, int rownum) throws IOException {
         String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
-        File file = new File(path + File.separator + "POImovieInfo.xls");
+        File file = new File(path + File.separator + "POImovieInfo.xlsx");
+
+
 
         if(!file.exists()) {
-            System.out.println("Enetered Condition");
+            System.out.println("Entered Condition");
             createFile();
         }
 
+        if(file.exists() && checked.equals(false)) {
+            findLastRow();
+        }
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(fis);
+
+            XSSFSheet sheet = workbook.getSheet("Movies");
+
+            Map<String, Object[]> label = new TreeMap<>();
+            label.put("1", new Object[] {"", parsedObj.get("Title"), parsedObj.get("Released"), parsedObj.get("Metascore"), parsedObj.get("imdbRating"),
+                    parsedObj.get("Plot"), parsedObj.get("imdbID"), parsedObj.get("Genre"), parsedObj.get("Director"), parsedObj.get("Actors"),
+                     parsedObj.get("Rated"), parsedObj.get("Runtime")});
+
+            Set<String> keyset = label.keySet();
+            rownum = rownum + lastRow;
+            for(String key : keyset) {
+
+                Row row = sheet.createRow(rownum++);
+                Object[] objArr = label.get(key);
+                int cellnum = 0;
+                for(Object obj : objArr) {
+                    Cell cell = row.createCell(cellnum++);
+                    System.out.println((String) obj);
+                    cell.setCellValue((String) obj);
+                }
+            }
+            FileOutputStream out = new FileOutputStream(file);
+            workbook.write(out);
+            out.close();
+            System.out.println("Movie Added");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void findLastRow() throws IOException {
+        String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
+        File file = new File(path + File.separator + "POImovieInfo.xlsx");
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            XSSFWorkbook workbook = new XSSFWorkbook(fis);
+            XSSFSheet sheet = workbook.getSheet("Movies");
+            XSSFRow sheetRow = sheet.getRow(lastRow);
+
+            while (sheetRow != null) {
+                lastRow = lastRow + 1;
+                sheetRow = sheet.getRow(lastRow);
+            }
+            checked = true;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 

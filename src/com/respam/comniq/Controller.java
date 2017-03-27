@@ -261,10 +261,10 @@ public class Controller {
                     JSONArray parsedArr = (JSONArray) obj;
 
                     // Loop JSON Array
-                    for (int i = 0; i < 1; i++) {
+                    for (int i = 0; i < parsedArr.size(); i++) {
                         JSONObject parsedObj = (JSONObject) parsedArr.get(i);
 //                        export.excelWriter(parsedObj);
-                        export.excelWriter(parsedObj);
+                        export.excelWriter(parsedObj, i);
                         System.out.println("Done with " + parsedObj.get("Title"));
                         updateProgress(i, parsedArr.size() - 1);
                     }
