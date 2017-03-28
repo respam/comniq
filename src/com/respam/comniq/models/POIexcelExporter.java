@@ -17,19 +17,15 @@
 
 package com.respam.comniq.models;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.simple.JSONObject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -40,6 +36,10 @@ import java.util.TreeMap;
 public class POIexcelExporter {
     int lastRow = 0;
     Boolean checked = false;
+    int pictureureIdx;
+    Drawing drawing;
+    ClientAnchor anchor;
+
 
     public void createFile() throws IOException {
         String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
@@ -54,30 +54,48 @@ public class POIexcelExporter {
         label.put("1", new Object[] {"Poster", "Title", "Release Date", "Metascore", "IMDB Rating",
         "Plot", "IMDB URL", "Genre", "Director", "Actors", "Rating", "Runtime"});
 
-        System.out.println(label);
         // Iterate over label and write to sheet
         Set<String> keyset = label.keySet();
 
+        // Setting Style for the Label Row
         Font font = workbook.createFont();
         font.setFontHeight((short) 240);
         font.setFontName("Courier New");
         font.setBold(true);
+        XSSFCellStyle labelStyle = workbook.createCellStyle();
+        labelStyle.setWrapText(true);
+        labelStyle.setFont(font);
 
+        // Setting column widths
+        sheet.setColumnWidth(0, 4000);
+        sheet.setColumnWidth(1, 8500);
+        sheet.setColumnWidth(2, 4000);
+        sheet.setColumnWidth(3, 4000);
+        sheet.setColumnWidth(4, 3500);
+        sheet.setColumnWidth(5, 9500);
+        sheet.setColumnWidth(6, 5000);
+        sheet.setColumnWidth(7, 4000);
+        sheet.setColumnWidth(8, 3500);
+        sheet.setColumnWidth(9, 4000);
+        sheet.setColumnWidth(10, 3000);
+        sheet.setColumnWidth(11, 4000);
+
+        // Freezing the first row
+        sheet.createFreezePane(0, 1);
+
+        // Filling each cell with Label data
         for(String key : keyset) {
             Row row = sheet.createRow(0);
             Object[] objArr = label.get(key);
             int cellnum = 0;
             for(Object obj : objArr) {
                 Cell cell = row.createCell(cellnum++);
-                if(cellnum == 2 ) {
-                    XSSFCellStyle titleStyle = workbook.createCellStyle();
-                    titleStyle.setFont(font);
-                    cell.setCellStyle(titleStyle);
-                }
-                System.out.println((String) obj);
+                cell.setCellStyle(labelStyle);
                 cell.setCellValue((String) obj);
             }
         }
+
+        // Writing the excel file
         try {
             FileOutputStream out = new FileOutputStream(file);
             workbook.write(out);
@@ -94,10 +112,11 @@ public class POIexcelExporter {
         String path = System.getProperty("user.home") + File.separator + "comniq" + File.separator + "output";
         File file = new File(path + File.separator + "POImovieInfo.xlsx");
 
-
+        String thumbnailPath = System.getProperty("user.home") + File.separator + "comniq" +
+                File.separator + "output" + File.separator + "thumbnails";
+        File posterFile = new File(thumbnailPath + File.separator + parsedObj.get("Title") + ".jpg");
 
         if(!file.exists()) {
-            System.out.println("Entered Condition");
             createFile();
         }
 
@@ -117,22 +136,51 @@ public class POIexcelExporter {
                      parsedObj.get("Rated"), parsedObj.get("Runtime")});
 
             Set<String> keyset = label.keySet();
+
+            // Setting Style for the Label Row
+
+            XSSFCellStyle contentStyle = workbook.createCellStyle();
+            contentStyle.setWrapText(true);
+            contentStyle.setVerticalAlignment(VerticalAlignment.TOP);
+
             rownum = rownum + lastRow;
+
+            if(posterFile.exists()) {
+                InputStream imageStream = new FileInputStream(thumbnailPath + File.separator +
+                        parsedObj.get("Title") + ".jpg");
+                byte[] imageBytes = IOUtils.toByteArray(imageStream);
+                pictureureIdx = workbook.addPicture(imageBytes, Workbook.PICTURE_TYPE_PNG);
+                imageStream.close();
+
+                CreationHelper helper = workbook.getCreationHelper();
+                drawing = sheet.createDrawingPatriarch();
+                anchor = helper.createClientAnchor();
+
+            }
+
             for(String key : keyset) {
 
                 Row row = sheet.createRow(rownum++);
+                row.setHeight((short) 2000);
                 Object[] objArr = label.get(key);
                 int cellnum = 0;
                 for(Object obj : objArr) {
                     Cell cell = row.createCell(cellnum++);
-                    System.out.println((String) obj);
+                    cell.setCellStyle(contentStyle);
                     cell.setCellValue((String) obj);
+                }
+                if(posterFile.exists()) {
+                    anchor.setCol1(0);
+                    anchor.setRow1(rownum - 1);
+                    anchor.setCol2(0);
+                    anchor.setRow2(rownum - 1);
+                    Picture pict = drawing.createPicture(anchor, pictureureIdx);
+                    pict.resize(1, 1);
                 }
             }
             FileOutputStream out = new FileOutputStream(file);
             workbook.write(out);
             out.close();
-            System.out.println("Movie Added");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -158,6 +206,4 @@ public class POIexcelExporter {
             e.printStackTrace();
         }
     }
-
-
 }

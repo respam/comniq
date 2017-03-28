@@ -82,7 +82,7 @@ public class OMDBParser {
             if(null != jsonObject.get("Title")) {
                 movieInfo.add(jsonObject);
 
-                // Download the thumbnails if present
+                // Download the thumbnails if Poster URL present
                 if(null != jsonObject.get("Poster")) {
                     imageURL = ((String) jsonObject.get("Poster"));
                     System.out.println(imageURL);
