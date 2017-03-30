@@ -71,3 +71,4 @@ fabric.properties
 # project specific
 /output/
 /src/output
+/src/META-INF

@@ -34,6 +34,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
@@ -70,7 +71,7 @@ public class OMDBParser {
                     .build();
             // End of proxy client
 
-            String uri = "http://www.omdbapi.com/?t=" + movie + "&y=" + year;
+            String uri = "http://www.omdbapi.com/?t=" + URLEncoder.encode(movie) + "&y=" + year;
             uri = uri.replace(" ","%20");
             HttpGet request = new HttpGet(uri);
             HttpResponse response = client.execute(request);
@@ -91,7 +92,6 @@ public class OMDBParser {
                     FileOutputStream fos = new FileOutputStream(path + File.separator + jsonObject.get("Title") + ".jpg");
                     fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
                 }
-
             }
 
         } catch (ParseException | IOException | UnsupportedOperationException e) {
