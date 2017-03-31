@@ -75,8 +75,8 @@ public class Controller {
         File loc = new File(localMovies);
 
         if (loc.isDirectory() == false) {
-            Text errorMsg = new Text("Not a valid Movies Directory");
-            errorMsg.setFill(Color.RED);
+            Text errorMsg = new Text(" Not a valid Movies Directory");
+            errorMsg.setFill(Color.WHITE);
             textFlow.getChildren().clear();
             textFlow.getChildren().add(errorMsg);
         }
@@ -91,8 +91,8 @@ public class Controller {
         }
 
         if (inputPath.getText().trim().isEmpty()) {
-            Text errorMsg = new Text("Enter a valid Movies Directory");
-            errorMsg.setFill(Color.RED);
+            Text errorMsg = new Text(" Enter a valid Movies Directory");
+            errorMsg.setFill(Color.WHITE);
             textFlow.getChildren().clear();
             textFlow.getChildren().add(errorMsg);
         } else if (loc.isDirectory() == true && !(inputPath.getText().trim().isEmpty())) {

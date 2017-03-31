@@ -18,6 +18,9 @@
     -fx-background-color: text-area-background ;
 }
 
+TextFlow {
+    -fx-background-color: #01559e;
+}
 .text-field {
     text-field-background: #ffffff;
 }
