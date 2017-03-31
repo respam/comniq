@@ -60,6 +60,7 @@ public class Controller {
 
     @FXML
     protected void exportButtonAction() {
+        outputText();
         progressBar.relocate(0, 100);
         textFlow.getChildren().clear();
         parseWorker = createExportWorker();
@@ -81,7 +82,7 @@ public class Controller {
         }
 
         if (progBarStatus == false) {
-            progressBar.setProgress(0);
+            progressBar.relocate(0, 100);
             progBarStatus = true;
         }
 
@@ -190,11 +191,6 @@ public class Controller {
                 return true;
             }
         };
-    }
-
-    @FXML
-    public void handleDisplayAction() {
-        outputText();
     }
 
     private void outputText() {

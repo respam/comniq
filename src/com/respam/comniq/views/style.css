@@ -1,3 +1,27 @@
 #anchorPane {
-    -fx-background-color: white;
+    -fx-background-color: #eeeeee;
+}
+
+#header {
+    -fx-background-color: #01559e;
+}
+
+.button {
+    -fx-background-color: #01559e;
+}
+
+.text-area {
+    text-area-background: #ffffff;
+}
+
+.text-area .content {
+    -fx-background-color: text-area-background ;
+}
+
+.text-field {
+    text-field-background: #ffffff;
+}
+
+.text-field {
+    -fx-background-color: text-field-background;
 }
