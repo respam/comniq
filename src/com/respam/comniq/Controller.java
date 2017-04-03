@@ -78,6 +78,7 @@ public class Controller {
 
     @FXML
     protected void exportButtonAction() {
+        progressBar.setVisible(true);
         outputText();
         progressBar.relocate(0, 100);
         textFlow.getChildren().clear();
@@ -89,6 +90,7 @@ public class Controller {
 
     @FXML
     protected void handleLocalButtonAction() {
+        progressBar.setVisible(true);
         String exdMovies = excludeArea.getText();
         excluded = new HashSet(Arrays.asList(exdMovies.split(";")));
         localMovies = inputPath.getText();
@@ -166,6 +168,7 @@ public class Controller {
 
     @FXML
     public void handleOMDBButtonAction() {
+        progressBar.setVisible(true);
         progressBar.relocate(0, 100);
         textFlow.getChildren().clear();
         requestWorker = OMDBworker();
@@ -241,6 +244,7 @@ public class Controller {
 
                     textArea.appendText("\n\n");
                 }
+                textArea.positionCaret(0);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
