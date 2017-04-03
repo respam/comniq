@@ -29,6 +29,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("views/viewMain.fxml"));
 
+        primaryStage.setMinWidth(713);
+        primaryStage.setMinHeight(492);
+//        primaryStage.setWidth(713);
+//        primaryStage.setHeight(492);
         primaryStage.setTitle("Comniq");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();

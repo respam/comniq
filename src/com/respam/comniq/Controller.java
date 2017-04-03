@@ -38,13 +38,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.*;
 
 public class Controller {
+//    List<String> excluded = new ArrayList<>();
+    Set excluded = new HashSet();
     private Task parseWorker;
     private Task requestWorker;
 
     @FXML
     private TextArea textArea;
+
+    @FXML
+    private TextArea excludeArea;
 
     @FXML
     private TextFlow textFlow;
@@ -59,6 +65,18 @@ public class Controller {
     private TextField inputPath;
 
     @FXML
+    protected void excludeButtonAction() {
+        DirectoryChooser edc = new DirectoryChooser();
+        edc.setInitialDirectory(new File(System.getProperty("user.home")));
+        edc.setTitle("Exclude Directories");
+        File excludeDC = edc.showDialog(null);
+        if (null != excludeDC) {
+            excludeArea.appendText(excludeDC.getName());
+            excludeArea.appendText(";");
+        }
+    }
+
+    @FXML
     protected void exportButtonAction() {
         outputText();
         progressBar.relocate(0, 100);
@@ -71,6 +89,8 @@ public class Controller {
 
     @FXML
     protected void handleLocalButtonAction() {
+        String exdMovies = excludeArea.getText();
+        excluded = new HashSet(Arrays.asList(exdMovies.split(";")));
         localMovies = inputPath.getText();
         File loc = new File(localMovies);
 
@@ -112,30 +132,28 @@ public class Controller {
 
                 File loc = new File(localMovies);
                 JSONArray jsonArr = new JSONArray();
-
-
                 String[] folders = loc.list();
+
                 for (int i = 0; i < folders.length; i++) {
                     JSONObject jsonObj = new JSONObject();
 
-                    if (folders[i].charAt(0) == '(' || folders[i].charAt(0) == '{') {
-                        String[] movieYear = folders[i].split("[({})]");
-                        jsonObj.put("movie", movieYear[2].trim());
-                        jsonObj.put("year", movieYear[1]);
-                    }
-                    else if ((folders[i].charAt(folders[i].length() - 1) == ')') || (folders[i].charAt(folders[i].length() - 1) == '}')) {
-                        String[] movieName = folders[i].split("[({]");
-                        String[] movieYear = movieName[1].split("[)}]");
-                        jsonObj.put("movie", movieName[0].trim());
-                        jsonObj.put("year", movieYear[0]);
-                    }
+                    if(!(excluded.contains(folders[i]))) {
+                        if (folders[i].charAt(0) == '(' || folders[i].charAt(0) == '{') {
+                            String[] movieYear = folders[i].split("[({})]");
+                            jsonObj.put("movie", movieYear[2].trim());
+                            jsonObj.put("year", movieYear[1]);
+                        } else if ((folders[i].charAt(folders[i].length() - 1) == ')') || (folders[i].charAt(folders[i].length() - 1) == '}')) {
+                            String[] movieName = folders[i].split("[({]");
+                            String[] movieYear = movieName[1].split("[)}]");
+                            jsonObj.put("movie", movieName[0].trim());
+                            jsonObj.put("year", movieYear[0]);
+                        } else {
+                            jsonObj.put("movie", folders[i].trim());
+                            jsonObj.put("year", null);
+                        }
 
-                    else {
-                        jsonObj.put("movie", folders[i].trim());
-                        jsonObj.put("year", null);
+                        jsonArr.add(jsonObj);
                     }
-
-                    jsonArr.add(jsonObj);
                     updateProgress(i, folders.length - 1);
                 }
 
@@ -201,7 +219,7 @@ public class Controller {
             Object obj = parser.parse(new FileReader(path + File.separator + "MovieInfo.json"));
             JSONArray parsedArr = (JSONArray) obj;
 
-            if(parsedArr.size() == 0) {
+            if (parsedArr.size() == 0) {
                 textArea.setEditable(false);
                 textArea.clear();
                 textArea.appendText("No Movies found from the provided Directory !!!");
@@ -257,7 +275,7 @@ public class Controller {
                     // Loop JSON Array
                     for (int i = 0; i < parsedArr.size(); i++) {
                         JSONObject parsedObj = (JSONObject) parsedArr.get(i);
-                        if(null != parsedObj.get("Title")) {
+                        if (null != parsedObj.get("Title")) {
                             export.excelWriter(parsedObj, i);
                             System.out.println("Done with " + "\"" + parsedObj.get("Title") + "\"");
                         }

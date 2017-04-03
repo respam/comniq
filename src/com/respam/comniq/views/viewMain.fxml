@@ -33,13 +33,13 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Text>
-      <TextFlow fx:id="textFlow" layoutY="467.0" prefHeight="20.0" prefWidth="713.0" stylesheets="@style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
+      <TextFlow fx:id="textFlow" layoutY="467.0" prefHeight="20.0" prefWidth="713.0" stylesheets="@style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <JFXProgressBar fx:id="progressBar" layoutX="25.0" layoutY="435.0" prefHeight="0.0" prefWidth="313.0" stylesheets="@style.css" AnchorPane.bottomAnchor="54.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="262.0" />
       <JFXTextArea fx:id="textArea" editable="false" layoutX="24.0" layoutY="157.0" prefHeight="242.0" prefWidth="426.0" AnchorPane.bottomAnchor="93.0" AnchorPane.leftAnchor="24.0" AnchorPane.rightAnchor="263.0" AnchorPane.topAnchor="157.0">
          <font>
             <Font size="13.0" />
          </font></JFXTextArea>
-      <JFXTextArea id="excludeArea" layoutX="425.0" layoutY="157.0" prefHeight="242.0" prefWidth="221.0" stylesheets="@style.css" AnchorPane.bottomAnchor="93.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="157.0">
+      <JFXTextArea fx:id="excludeArea" layoutX="425.0" layoutY="157.0" prefHeight="242.0" prefWidth="221.0" stylesheets="@style.css" AnchorPane.bottomAnchor="93.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="157.0">
          <font>
             <Font size="13.0" />
          </font></JFXTextArea>
@@ -52,7 +52,7 @@
                </font>
             </Text>
          </children></AnchorPane>
-      <JFXButton buttonType="RAISED" layoutX="539.0" layoutY="72.0" onAction="#browseButtonAction" prefHeight="29.0" prefWidth="36.0" text=". . ." textFill="WHITE" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="72.0">
+      <JFXButton buttonType="RAISED" layoutX="652.0" layoutY="73.0" onAction="#browseButtonAction" prefHeight="29.0" prefWidth="36.0" text=". . ." textFill="WHITE" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="73.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font></JFXButton>
@@ -69,7 +69,7 @@
          <font>
             <Font name="System Bold" size="13.0" />
          </font></JFXButton>
-      <JFXButton buttonType="RAISED" layoutX="467.0" layoutY="119.0" prefHeight="29.0" prefWidth="120.0" text="Exclude Folders" textFill="WHITE" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="119.0">
+      <JFXButton onAction="#excludeButtonAction" buttonType="RAISED" layoutX="467.0" layoutY="119.0" prefHeight="29.0" prefWidth="120.0" text="Exclude Folders" textFill="WHITE" AnchorPane.rightAnchor="126.0" AnchorPane.topAnchor="119.0">
          <font>
             <Font name="System Bold" size="13.0" />
          </font>
